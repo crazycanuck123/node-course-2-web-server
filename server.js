@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const port =process.env.PORT || 3000;
 var app = express();
-
+var error = false;
 hbs.registerPartials(__dirname + '/views/partials');
 app.set('view engine', 'hbs');
 
@@ -17,23 +17,25 @@ app.use((req, res, next) =>{
     if(err){
       console.log('Unable to append to server.log');
     }
-  })
+  });
   next();
 });
-app.use((req, res) =>{
-  var now = new Date().toString();
-  var log = `${now}: ${req.method} ${req.url}`;
-  console.log(log);
-  fs.appendFile('server.log', log + '\n', (err) =>{
-    if(err){
-      console.log('Unable to append to server.log');
-    }
-  });
-  res.render('maintenance.hbs', {
-    pageTitle: 'Maintenance'
-  })
-});
-
+// if(error === true){
+// app.use((req, res, next) =>{
+//   var now = new Date().toString();
+//   var log = `${now}: ${req.method} ${req.url}`;
+//   console.log(log);
+//   fs.appendFile('server.log', log + '\n', (err) =>{
+//     if(err){
+//       console.log('Unable to append to server.log');
+//     }
+//   });
+//   res.render('maintenance.hbs', {
+//     pageTitle: 'Maintenance'
+//   });
+//   next();
+// });
+// };
 app.use(express.static(__dirname + '/public'));
 
 hbs.registerHelper('getCurrentYear', () =>{
@@ -57,7 +59,15 @@ app.get('/', (req, res) =>{
 app.get('/about',(req,res)=>{
   res.render('about.hbs', {
     pageLink: '/about.html',
-    pageTitle: 'About Page',
+    pageTitle: 'About Page'
+  });
+});
+
+app.get('/projects',(req,res)=>{
+  res.render('projects.hbs', {
+    pageLink: '/projects.html',
+    pageTitle: 'Portfolio Page',
+    fillerText: 'Portfolio Page Here'
   });
 });
 
